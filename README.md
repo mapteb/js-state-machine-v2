@@ -1,7 +1,9 @@
 # js-state-machine-v2
+This project is a JavaScript framework for UI applications. Uses jQuery to illustrate the framework.
+
 This project extends the state machine developed in [js-state-machine](https://github.com/mapteb/js-state-machine) to use server models.
 
-Uses jQuery to illustrate the framework.
+The complete source for this framework is in one [html](https://raw.githubusercontent.com/mapteb/js-state-machine-v2/master/src/main/resources/static/jqStateMachine.html).
 
 To demo this project import into an IDE like [STS](https://spring.io/tools) as a Gradle Spring Boot application. When started access http://localhost:8080/jqStateMachine.html
 
