@@ -116,7 +116,9 @@
 		};
 
         //handle the page load event
-  		turnstileStates.defaultState({});
+        //initiaize uiData if necessary
+        //for the current example there is no server data on page load
+  		turnstileStates.defaultState(event);
         
         //handle the coin event
 	    $("#coinBtn").on("click",{ coinval : function(){return $("#coinTxt").val();} },function(event) {
