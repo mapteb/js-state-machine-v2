@@ -31,9 +31,7 @@
             thankyouShow: "none"        
         }
         
- 
-    $(function() {
-       const turnstileStates = {
+        const turnstileStates = {
             defaultState : function(e) {
                 renderApp(uiProps);
             },
@@ -113,6 +111,8 @@
             }
         };
 
+
+    $(function() {
         //handle the page load event
         //initiaize uiData if necessary
         //for the current example there is no server data on page load
