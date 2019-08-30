@@ -6,205 +6,205 @@
 <title>jQuery State Machine demo</title>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 <script>
-	/*
-	
+    /*
+    
     Classic turnstile example:
-	
-	 defaultState -      coinEvent -> handleCoin() - coinSuccessEvent - coinSuccessState
-	 defaultState -      coinEvent -> handleCoin() - coinErrorEvent   - coinErrorState
-	 coinErrorState -    coinEvent -> handleCoin() - coinSuccessEvent - coinSuccessState
-	 coinSuccessState -  pushEvent -> handlePush() - pushSuccessEvent - pushSuccessState
-	
-	 */
-	 
-		//initialize UI props
-		var uiProps = {
-			state: "defaultState",
-			welcomeShow: "block",
-			turnstileLockedShow: "block",
-			turnstileUnlockedShow: "none",
-			coinTxtDisabled: false,
-			coinTxtValue: "",
-			coinBtnDisabled: false,
-			pushBtnDisabled: true,
-			coinErrorMsgShow: "none",
-			thankyouShow: "none"		
-		}
-		
+    
+     defaultState -      coinEvent -> handleCoin() - coinSuccessEvent - coinSuccessState
+     defaultState -      coinEvent -> handleCoin() - coinErrorEvent   - coinErrorState
+     coinErrorState -    coinEvent -> handleCoin() - coinSuccessEvent - coinSuccessState
+     coinSuccessState -  pushEvent -> handlePush() - pushSuccessEvent - pushSuccessState
+    
+     */
+     
+        //initialize UI props
+        var uiProps = {
+            state: "defaultState",
+            welcomeShow: "block",
+            turnstileLockedShow: "block",
+            turnstileUnlockedShow: "none",
+            coinTxtDisabled: false,
+            coinTxtValue: "",
+            coinBtnDisabled: false,
+            pushBtnDisabled: true,
+            coinErrorMsgShow: "none",
+            thankyouShow: "none"        
+        }
+        
 
-	$(function() {
-		const turnstileStates = {
-			defaultState : function(e) {
-				renderApp(uiProps);
-			},
-			coinSuccessState : function(e) {
-				uiProps.state="coinSuccessState";
-				uiProps.turnstileLockedShow="none";
-				uiProps.turnstileUnlockedShow="block";
-				uiProps.coinTxtDisabled=true;
-				uiProps.coinTxtValue=e.data.coinval;
-				uiProps.coinBtnDisabled=true;
-				uiProps.pushBtnDisabled=false;
-				uiProps.coinErrorMsgShow="none";
-				renderApp(uiProps);
-			},
-			coinErrorState : function(e) {
-				uiProps.state="coinErrorState";
-				uiProps.turnstileLockedShow="block";
-				uiProps.turnstileUnlockedShow="none";
-				uiProps.coinTxtDisabled=false;
-				uiProps.coinTxtValue=e.data.coinval;
-				uiProps.coinBtnDisabled=false;
-				uiProps.pushBtnDisabled=true;
-				uiProps.coinErrorMsgShow="block";
-				uiProps.coinErrorMsgText=e.data.errorMessage;
-				renderApp(uiProps);
-			},
-			pushSuccessState : function(e) {
-				uiProps.state="pushSuccessState";
-				uiProps.welcomeShow="none";
-				uiProps.thankyouShow="block";
-				uiProps.turnstileLockedShow="none";
-				uiProps.turnstileUnlockedShow="none";
-				uiProps.coinTxtDisabled=true;
-				uiProps.coinBtnDisabled=true;
-				uiProps.pushBtnDisabled=true;
-				uiProps.coinErrorMsgShow="none";
-				renderApp(uiProps);
-			}
-		};
+    $(function() {
+        const turnstileStates = {
+            defaultState : function(e) {
+                renderApp(uiProps);
+            },
+            coinSuccessState : function(e) {
+                uiProps.state="coinSuccessState";
+                uiProps.turnstileLockedShow="none";
+                uiProps.turnstileUnlockedShow="block";
+                uiProps.coinTxtDisabled=true;
+                uiProps.coinTxtValue=e.data.coinval;
+                uiProps.coinBtnDisabled=true;
+                uiProps.pushBtnDisabled=false;
+                uiProps.coinErrorMsgShow="none";
+                renderApp(uiProps);
+            },
+            coinErrorState : function(e) {
+                uiProps.state="coinErrorState";
+                uiProps.turnstileLockedShow="block";
+                uiProps.turnstileUnlockedShow="none";
+                uiProps.coinTxtDisabled=false;
+                uiProps.coinTxtValue=e.data.coinval;
+                uiProps.coinBtnDisabled=false;
+                uiProps.pushBtnDisabled=true;
+                uiProps.coinErrorMsgShow="block";
+                uiProps.coinErrorMsgText=e.data.errorMessage;
+                renderApp(uiProps);
+            },
+            pushSuccessState : function(e) {
+                uiProps.state="pushSuccessState";
+                uiProps.welcomeShow="none";
+                uiProps.thankyouShow="block";
+                uiProps.turnstileLockedShow="none";
+                uiProps.turnstileUnlockedShow="none";
+                uiProps.coinTxtDisabled=true;
+                uiProps.coinBtnDisabled=true;
+                uiProps.pushBtnDisabled=true;
+                uiProps.coinErrorMsgShow="none";
+                renderApp(uiProps);
+            }
+        };
 
-		const turnstileEvents = {
-			coinEvent : {
-				handleCoin : function(e) {
-					//call the server api to validate coin amount
-					var result = null;
-					isCoinAmountValid(e.data.coinval())
-					.done(function(serverData){
-						$("body").triggerHandler("turnstileEvents.coinSuccessEvent");
-					})
-					.fail( function(xhr, textStatus, errorThrown) {
-						if(xhr.status==0)xhr.responseText="Unknown server error, please try later.";
-						$("body").triggerHandler("turnstileEvents.coinErrorEvent", xhr.responseText);
-				    });
-					return result;
-				}
-			},
-			coinSuccessEvent : {
-				nextState : function(e) {
-					return turnstileStates.coinSuccessState(e);
-				}
-			},
-			coinErrorEvent : {
-				nextState : function(e) {
-					//e.data.errorMessage = 'server sent messge';
-					return turnstileStates.coinErrorState(e);
-				}
-			},
-			pushEvent : {
-				handlePush : function(e) {
-					return turnstileEvents.pushSuccessEvent;
+        const turnstileEvents = {
+            coinEvent : {
+                handleCoin : function(e) {
+                    //call the server api to validate coin amount
+                    var result = null;
+                    isCoinAmountValid(e.data.coinval())
+                    .done(function(serverData){
+                        $("body").triggerHandler("turnstileEvents.coinSuccessEvent");
+                    })
+                    .fail( function(xhr, textStatus, errorThrown) {
+                        if(xhr.status==0)xhr.responseText="Unknown server error, please try later.";
+                        $("body").triggerHandler("turnstileEvents.coinErrorEvent", xhr.responseText);
+                    });
+                    return result;
+                }
+            },
+            coinSuccessEvent : {
+                nextState : function(e) {
+                    return turnstileStates.coinSuccessState(e);
+                }
+            },
+            coinErrorEvent : {
+                nextState : function(e) {
+                    //e.data.errorMessage = 'server sent messge';
+                    return turnstileStates.coinErrorState(e);
+                }
+            },
+            pushEvent : {
+                handlePush : function(e) {
+                    return turnstileEvents.pushSuccessEvent;
 
-				}
-			},
-			pushSuccessEvent : {
-				nextState : function(e) {
-					return turnstileStates.pushSuccessState(e);
-				}
-			}
-		};
+                }
+            },
+            pushSuccessEvent : {
+                nextState : function(e) {
+                    return turnstileStates.pushSuccessState(e);
+                }
+            }
+        };
 
         //handle the page load event
         //initiaize uiData if necessary
         //for the current example there is no server data on page load
-  		turnstileStates.defaultState(event);
+          turnstileStates.defaultState(event);
         
         //handle the coin event
-	    $("#coinBtn").on("click",{ coinval : function(){return $("#coinTxt").val();} },function(event) {
-			turnstileEvents.coinEvent.handleCoin(event);
-		});
+        $("#coinBtn").on("click",{ coinval : function(){return $("#coinTxt").val();} },function(event) {
+            turnstileEvents.coinEvent.handleCoin(event);
+        });
 
         //handle the push event
-		$("#pushBtn").on("click", function() {
-			return turnstileEvents.pushEvent.handlePush(event).nextState(event);
-		});
+        $("#pushBtn").on("click", function() {
+            return turnstileEvents.pushEvent.handlePush(event).nextState(event);
+        });
         
         //handle the custom coinSuccessEvent
         $("body").on("turnstileEvents.coinSuccessEvent", {coinval:function(){return $("#coinTxt").val();}}, function(event){
-        	return turnstileEvents.coinSuccessEvent.nextState(event);
+            return turnstileEvents.coinSuccessEvent.nextState(event);
         });
         
         //handle the custom coinErrorEvent
         $("body").on("turnstileEvents.coinErrorEvent",{errorMessage:"", coinval:function(){return $("#coinTxt").val();}}, function(event, param){
-        	event.data.errorMessage=param;
-        	return turnstileEvents.coinErrorEvent.nextState(event);
+            event.data.errorMessage=param;
+            return turnstileEvents.coinErrorEvent.nextState(event);
         });
-	});
-	 
+    });
      
-	//use ajax post to the server api /turnstile/payment 
-	function isCoinAmountValid(coinAmt){
-		if(coinAmt=='')coinAmt=0.0;
-		var requestBody = "{ \"payment\":" + coinAmt +"}";
-		$.ajaxSetup({
-			   headers:{
-			      'Content-Type': "application/json"
-			   }
-			});
-		return $.post('http://localhost:8080/turnstile/payment', requestBody)
-	}
-	 
-	function renderApp(uiProps){
-		$("#state").text(uiProps.state);
-		$("#thankyou").css("display", uiProps.thankyouShow)
-		$("#turnstileLocked").css("display", uiProps.turnstileLockedShow);
-		$("#turnstileUnlocked").css("display", uiProps.turnstileUnlockedShow);
-		$("#coinTxt").prop("disabled", uiProps.coinTxtDisabled);
-		$("#coinTxt").val(uiProps.coinTxtValue);
-		$("#coinBtn").prop("disabled", uiProps.coinBtnDisabled);
-		$("#pushBtn").prop("disabled", uiProps.pushBtnDisabled);
-		$("#coinErrorMsg").css("display", uiProps.coinErrorMsgShow);
-		$("#coinErrorMsg").text(uiProps.coinErrorMsgText);
-	} 
+     
+    //use ajax post to the server api /turnstile/payment 
+    function isCoinAmountValid(coinAmt){
+        if(coinAmt=='')coinAmt=0.0;
+        var requestBody = "{ \"payment\":" + coinAmt +"}";
+        $.ajaxSetup({
+               headers:{
+                  'Content-Type': "application/json"
+               }
+            });
+        return $.post('http://localhost:8080/turnstile/payment', requestBody)
+    }
+     
+    function renderApp(uiProps){
+        $("#state").text(uiProps.state);
+        $("#thankyou").css("display", uiProps.thankyouShow)
+        $("#turnstileLocked").css("display", uiProps.turnstileLockedShow);
+        $("#turnstileUnlocked").css("display", uiProps.turnstileUnlockedShow);
+        $("#coinTxt").prop("disabled", uiProps.coinTxtDisabled);
+        $("#coinTxt").val(uiProps.coinTxtValue);
+        $("#coinBtn").prop("disabled", uiProps.coinBtnDisabled);
+        $("#pushBtn").prop("disabled", uiProps.pushBtnDisabled);
+        $("#coinErrorMsg").css("display", uiProps.coinErrorMsgShow);
+        $("#coinErrorMsg").text(uiProps.coinErrorMsgText);
+    } 
 
-		
+        
 </script>
 </head>
 <body>
-	<blockquote>
-	    <p><strong id="state"></strong></p>
-		<p id="welcome">Welcome to our Turnstile station!</p>
-		<p id="thankyou">Thank you for visiting our turnstile station,
-			good bye!</p>
-		<p id="turnstileLocked">Turnstile is locked - please drop coins (of value > 0.00)
-			to unlock</p>
-		<p id="turnstileUnlocked">Turnstile is unlocked - please push and
-			enter</p>
+    <blockquote>
+        <p><strong id="state"></strong></p>
+        <p id="welcome">Welcome to our Turnstile station!</p>
+        <p id="thankyou">Thank you for visiting our turnstile station,
+            good bye!</p>
+        <p id="turnstileLocked">Turnstile is locked - please drop coins (of value > 0.00)
+            to unlock</p>
+        <p id="turnstileUnlocked">Turnstile is unlocked - please push and
+            enter</p>
 
-		<form id="turnstileForm" action="./" onsubmit="return false;" method="post">
-			<table>
-				<tr>
-					<td><input type="text" id="coinTxt" name="coinTxt" value=""
-						size="5"></input>
-						<button type="submit" id="coinBtn">Drop Coins</button>
-						&nbsp;&nbsp;&nbsp;<button id="pushBtn">Push</button>
-						</td>
-					<td>&nbsp;</td>
-					<td>&nbsp;</td>
-					<td>&nbsp;</td>
-					<td>&nbsp;</td>
-					<td>
-						&nbsp;						
-					</td>
-				</tr>
-				<tr>
-					<td colspan="6">
-							&nbsp;<font color="red" id="coinErrorMsg"></font>
-					</td>
-				</tr>
-			</table>
-		</form>
+        <form id="turnstileForm" action="./" onsubmit="return false;" method="post">
+            <table>
+                <tr>
+                    <td><input type="text" id="coinTxt" name="coinTxt" value=""
+                        size="5"></input>
+                        <button type="submit" id="coinBtn">Drop Coins</button>
+                        &nbsp;&nbsp;&nbsp;<button id="pushBtn">Push</button>
+                        </td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                    <td>
+                        &nbsp;                        
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="6">
+                            &nbsp;<font color="red" id="coinErrorMsg"></font>
+                    </td>
+                </tr>
+            </table>
+        </form>
 
-	</blockquote>
+    </blockquote>
 </body>
 </html>
