@@ -120,13 +120,21 @@
           turnstileStates.defaultState(event);
         
         //handle the coin event
-        $("#coinBtn").on("click",{ coinval : function(){return $("#coinTxt").val();} },function(event) {
-            turnstileEvents.coinEvent.handleCoin(event);
+        $("#coinBtn").on("click",{ coinval : function(){return $("#coinTxt").val();},
+                                   curState: function(){return $("#state").text();} },function(event) {
+            //this guard condition should help when the user happens to click
+            //the browser's back button and loses the state of the page        
+            if(event.data.curState()==="defaultState" 
+                    || event.data.curState()==="coinErrorState"){
+                turnstileEvents.coinEvent.handleCoin(event);
+            }
         });
 
         //handle the push event
-        $("#pushBtn").on("click", function() {
-            return turnstileEvents.pushEvent.handlePush(event).nextState(event);
+        $("#pushBtn").on("click", { curState: function(){return $("#state").text();} }, function(event) {
+            if(event.data.curState()==="coinSuccessState" ){
+                turnstileEvents.pushEvent.handlePush(event).nextState(event);
+            }
         });
         
         //handle the custom coinSuccessEvent
