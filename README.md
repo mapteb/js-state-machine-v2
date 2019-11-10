@@ -16,4 +16,6 @@ The following state transitions can be tested.
 
 In the previous version validation of the coin amount was done in the client side. In this version the validation is performed in the server to illustrate the integration of the JavaScript framework with server models.
 
+If you found this project interesting, then it would help if you could add a GitHub star to this project at the top of this page.
+
 More information on this project is available [here](https://dzone.com/articles/a-javascript-framework-for-robust-ui-applications).
