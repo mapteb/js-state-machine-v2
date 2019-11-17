@@ -1,4 +1,5 @@
 # js-state-machine-v2
+
 This project is a JavaScript framework for UI applications. Uses jQuery to illustrate the framework. This front end is integrated with a Spring Boot API.
 
 This project extends the state machine developed in [js-state-machine](https://github.com/mapteb/js-state-machine) to use server models.
