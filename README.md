@@ -15,5 +15,6 @@ The following state transitions can be tested.
 `    coinErrorState   -  coinEvent -> handleCoin() - coinSuccessEvent - coinSuccessState`<br />
 `    coinSuccessState -  pushEvent -> handlePush() - pushSuccessEvent - pushSuccessState`<br />
 
+
 In the previous version validation of the coin amount was done in the client side. In this version the validation is performed in the server to illustrate the integration of the JavaScript framework with server models.
 
